@@ -854,7 +854,6 @@ static int method_create_session(sd_bus_message *message, void *userdata, sd_bus
                 /* Wut? There's already a session by this name and we didn't find it above? Weird, then let's
                  * not trust the audit data and let's better register a new ID */
                 if (hashmap_contains(m->sessions, id)) {
-                        log_warning("Existing logind session ID %s used by new audit session, ignoring.", id);
                         audit_id = AUDIT_SESSION_INVALID;
                         id = mfree(id);
                 }

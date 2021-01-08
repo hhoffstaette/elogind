@@ -767,13 +767,6 @@ int session_start(Session *s, sd_bus_message *properties, sd_bus_error *error) {
         if (r < 0)
                 return r;
 
-        log_struct(s->class == SESSION_BACKGROUND ? LOG_DEBUG : LOG_INFO,
-                   "MESSAGE_ID=" SD_MESSAGE_SESSION_START_STR,
-                   "SESSION_ID=%s", s->id,
-                   "USER_ID=%s", s->user->user_record->user_name,
-                   "LEADER="PID_FMT, s->leader,
-                   LOG_MESSAGE("New session %s of user %s.", s->id, s->user->user_record->user_name));
-
         if (!dual_timestamp_is_set(&s->timestamp))
                 dual_timestamp_get(&s->timestamp);
 
@@ -919,15 +912,6 @@ int session_finalize(Session *s) {
 
         if (!s->user)
                 return -ESTALE;
-
-        if (s->started)
-                log_struct(s->class == SESSION_BACKGROUND ? LOG_DEBUG : LOG_INFO,
-                           "MESSAGE_ID=" SD_MESSAGE_SESSION_STOP_STR,
-                           "SESSION_ID=%s", s->id,
-                           "USER_ID=%s", s->user->user_record->user_name,
-                           "LEADER="PID_FMT, s->leader,
-                           LOG_MESSAGE("Removed session %s.", s->id));
-                log_debug_elogind("Session %s not started, finalizing...", s->id);
 
         s->timer_event_source = sd_event_source_unref(s->timer_event_source);
 
